@@ -17,7 +17,7 @@
             margin:5px 0px;
             outline: none;
         }
-        #submit_button{
+        #login_button{
             margin-top: 10px;
             padding: 10px 20px;
             border-radius: 5px;
@@ -27,19 +27,13 @@
         }
     </style>
 	<body> 
-        <h1>Create an Account!!</h1>
+        <h1>Login!!</h1>
         <div id="create_account_div">
-            <input type="text" id="name" placeholder="Enter your Name (Required)" class="create_account_div_element" required/>
-            </br>
             <input type="email" id="email" placeholder="Enter your Email (Required)" class="create_account_div_element" required/>
-            </br>
-            <input type="number" id="phone" placeholder="Enter your Phone Number (Optional)" class="create_account_div_element"/>
             </br>
             <input type="password" id="password" placeholder="Enter your Password (Required)" class="create_account_div_element" required/>
             </br>
-            <input type="password" id="confirm_password" placeholder="Confirm Password (Required)" class="create_account_div_element" required/>
-            </br>
-            <input type="button" id="submit_button" value="Create Account!" onclick="createUser()"/>
+            <input type="button" id="login_button" value="Login!" onclick="loginUser()"/>
             </br>
         </div>
 
