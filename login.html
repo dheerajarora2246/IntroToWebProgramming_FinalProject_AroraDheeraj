@@ -3,30 +3,17 @@
 
 	<head>
 		<meta charset="utf-8"/>
-		<title> </title>
+        <title> </title>
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
-    <style>
-        h1,#create_account_div{
-            text-align: center;
-        }
-        .create_account_div_element{
-            width:25%;
-            padding: 5px 10px;
-            border:none;
-            border-bottom: solid black 2px;
-            margin:5px 0px;
-            outline: none;
-        }
-        #login_button{
-            margin-top: 10px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            background: orange;
-            border: none;
-            font-weight: bold;
-        }
-    </style>
 	<body> 
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="signup.html">Signup</a></li>
+            <li style="float:right"><a href="#" id="signout" onclick="signOut()">Signout</a></li>
+            <li style="float:right;pointer-events: none;"><a href="" id="username">Welcome Guest!</a></li>
+        </ul>
         <h1>Login!!</h1>
         <div id="create_account_div">
             <input type="email" id="email" placeholder="Enter your Email (Required)" class="create_account_div_element" required/>

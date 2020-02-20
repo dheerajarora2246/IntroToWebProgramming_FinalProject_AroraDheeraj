@@ -1,24 +1,70 @@
+let list_of_users = [];
+if(localStorage.getItem("list_of_users"))
+{
+    list_of_users = JSON.parse(localStorage.getItem("list_of_users"));
+}
+
+current_location = window.location.href.split("/");
+current_page = current_location[current_location.length - 1];
+if(sessionStorage.getItem("isLoggedIn") === "true" && (current_page === "signup.html" || current_page === "login.html") )
+{
+    alert("Already Logged In!!");
+    let gotopage= "";
+    list_of_users.forEach(user => {
+        if(user.user_email === sessionStorage.getItem("loggedInUsername"))
+        {
+            (user.user_ownership === "owner") ? gotopage = "owner.html" : gotopage = "index.html";
+        }
+    });
+    window.location = gotopage;
+    document.getElementById("username").innerHTML = sessionStorage.getItem("loggedInUsername");
+}
+
+if(sessionStorage.getItem("isLoggedIn") === "true" && (current_page == "index.html" || current_page ==="owner.html") )
+{
+    document.getElementById("signout").style.display = "block";
+    let loggedInUserEmail = sessionStorage.getItem("loggedInUsername");
+    list_of_users.forEach(user => {
+        if(user.user_email === loggedInUserEmail)
+        {
+            document.getElementById("username").innerHTML = "Welcome "+user.user_name;
+            return;
+        }
+    });
+}
+else
+{
+    document.getElementById("signout").style.display = "none";
+}
+
+function signOut()
+{
+    if(sessionStorage.getItem("isLoggedIn") === "true" && sessionStorage.getItem("loggedInUsername").length > 0)
+    {
+        sessionStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("loggedInUsername");
+        window.location = "index.html";
+        alert("Successfully Logged Out!");
+    }
+}
+
 function createUser()
 {
-    let list_of_users = [];
-    if(localStorage.getItem("list_of_users"))
-    {
-        list_of_users = JSON.parse(localStorage.getItem("list_of_users"));
-    }
-
     let name_field = document.getElementById("name");
     let email_field = document.getElementById("email");
     let phone_field = document.getElementById("phone");
     let password_field = document.getElementById("password");
     let confirm_password_field = document.getElementById("confirm_password");
+    let ownership_field = document.getElementById("ownership");
 
     let name = name_field.value;
     let email = email_field.value;
     let phone = phone_field.value;
     let password = password_field.value;
     let confirm_password = confirm_password_field.value;
+    let ownership = ownership_field.value;
 
-    if(name.length === 0 || email.length === 0 || password.length === 0 || confirm_password.length === 0)
+    if(name.length === 0 || email.length === 0 || password.length === 0 || confirm_password.length === 0 || ownership.length === 0) 
     {
         alert("Please Fill the required fields");
     }
@@ -36,7 +82,8 @@ function createUser()
                 user_name : name,
                 user_email : email,
                 user_phone : phone,
-                user_password : password
+                user_password : password,
+                user_ownership: ownership
             };
             list_of_users.push(current_user);
             localStorage.setItem("list_of_users",JSON.stringify(list_of_users));
@@ -55,13 +102,36 @@ function createUser()
 
 function loginUser()
 {
-    let sample = JSON.parse(localStorage.getItem("list_of_users"));
-    alert(sample.length);
-
-    sample.forEach(element => {
-        let str = "Name: "+element.user_name+"\nEmail: "+element.user_email+"\nPhone: "+element.user_phone+"\nPassword: "+element.user_password+"\n\n";
-        console.log(str);
+    let correct_credentials = false;
+    let ownership_type ="";
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    list_of_users.forEach(user => {
+        if(user.user_email === email && user.user_password === password)
+        {
+            sessionStorage.setItem("isLoggedIn","true");
+            sessionStorage.setItem("loggedInUsername",email);
+            ownership_type = user.user_ownership;
+            correct_credentials = true;
+            return;
+        }
     });
+
+    if(correct_credentials===true && ownership_type==="coworker")
+    {
+        window.location = "index.html";
+    }
+    else if(correct_credentials===true && ownership_type==="owner")
+    {
+        window.location = "owner.html";
+    }
+    else
+    {
+        alert("Invalid Credentials\nPlease Try Again!");
+        document.getElementById("email").value = null;
+        document.getElementById("password").value = null;
+        document.getElementById("email").focus();
+    }
 
 }
 
@@ -85,11 +155,11 @@ function getRandomString(lengthOfString)
     for(let i=0; i<lengthOfString; i++)
     {
         randomString+= characters.charAt(Math.round(Math.random() * charactersLength));
-        console.log(Math.round(Math.random() * charactersLength));
+        //console.log(Math.round(Math.random() * charactersLength));
     }
     return randomString;
 }
-console.log(encryptPassword("MyPassword") === encryptPassword("MyPassword"));
+//console.log(encryptPassword("MyPassword") === encryptPassword("MyPassword"));
 
 
 //------------------------------------------------------------------------------------------------------------

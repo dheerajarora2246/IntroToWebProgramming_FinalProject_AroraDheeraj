@@ -1,0 +1,51 @@
+body
+{
+    margin:0;
+}
+ul
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width:100%;
+    background-color: grey;
+}
+li a
+{
+    display: inline-block;
+    color:honeydew;
+    text-decoration: none;
+    /* text-transform: uppercase; */
+    font-size: 20px;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    padding: 15px 10px;
+}
+li{
+    display: inline-block;
+}
+li a:hover
+{
+    background-color:rgb(46, 196, 46);
+    cursor:pointer;
+    color:black;
+}
+
+h1,#create_account_div{
+    text-align: center;
+}
+.create_account_div_element{
+    width:25%;
+    padding: 5px 10px;
+    border:none;
+    border-bottom: solid black 2px;
+    margin:5px 0px;
+    outline: none;
+}
+#login_button,#submit_button{
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background: orange;
+    border: none;
+    font-weight: bold;
+}
