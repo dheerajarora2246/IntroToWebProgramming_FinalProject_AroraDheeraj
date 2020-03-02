@@ -9,8 +9,10 @@
 	<body> 
         <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="signup.html">Signup</a></li>
+            <span id="loginSignupMenu">
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html">Signup</a></li>
+            </span>
             <li style="float:right"><a href="#" id="signout" onclick="signOut()">Signout</a></li>
             <li style="float:right;pointer-events: none;"><a href="" id="username">Welcome Guest!</a></li>
         </ul>
@@ -21,9 +23,9 @@
             <input type="password" id="password" placeholder="Enter your Password (Required)" class="create_account_div_element" required/>
             </br>
             <input type="button" id="login_button" value="Login!" onclick="loginUser()"/>
-            </br>
+            </br></br>
+            <div style="text-align: center; font-weight: bold;"><a href="signup.html">Create an account</a></div>
         </div>
-
         <script src="script.js"></script>
 	</body>
 </html>

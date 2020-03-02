@@ -1,11 +1,18 @@
 let list_of_users = [];
+let list_of_properties_workspaces = [];
 if(localStorage.getItem("list_of_users"))
 {
     list_of_users = JSON.parse(localStorage.getItem("list_of_users"));
 }
 
+if(localStorage.getItem("list_of_properties_workspaces"))
+{
+    list_of_properties_workspaces = JSON.parse(localStorage.getItem("list_of_properties_workspaces"));
+}
+
 current_location = window.location.href.split("/");
 current_page = current_location[current_location.length - 1];
+current_page = current_page.split("?")[0];
 if(sessionStorage.getItem("isLoggedIn") === "true" && (current_page === "signup.html" || current_page === "login.html") )
 {
     alert("Already Logged In!!");
@@ -19,8 +26,12 @@ if(sessionStorage.getItem("isLoggedIn") === "true" && (current_page === "signup.
     window.location = gotopage;
     document.getElementById("username").innerHTML = sessionStorage.getItem("loggedInUsername");
 }
+else if(sessionStorage.getItem("isLoggedIn") != "true" && current_page === "index.html")
+{
+    window.location = "login.html";
+}
 
-if(sessionStorage.getItem("isLoggedIn") === "true" && (current_page == "index.html" || current_page ==="owner.html") )
+if(sessionStorage.getItem("isLoggedIn") === "true" && (current_page == "index.html" || current_page ==="owner.html" || current_page === "owner_add_property_workspace.html" || current_page === "owner_update_property_workspace.html" || current_page === "viewpost.html"))
 {
     document.getElementById("signout").style.display = "block";
     let loggedInUserEmail = sessionStorage.getItem("loggedInUsername");
@@ -28,14 +39,182 @@ if(sessionStorage.getItem("isLoggedIn") === "true" && (current_page == "index.ht
         if(user.user_email === loggedInUserEmail)
         {
             document.getElementById("username").innerHTML = "Welcome "+user.user_name;
+            document.getElementById("loginSignupMenu").style.display = "none";
             return;
         }
     });
 }
 else
 {
+    document.getElementById("loginSignupMenu").style.display = "inline";
     document.getElementById("signout").style.display = "none";
 }
+
+function showProperties()
+{
+    let table_data = "";
+
+    if(list_of_properties_workspaces.length>0)
+    {
+        table_data += "<tr> <th>Title</th> <th>Description</th> <th>Type</th> <th>Edit/Delete</th> </tr>";
+        let temp_len = 0;
+        list_of_properties_workspaces.forEach(row => {
+            if(row.post_user_email === sessionStorage.getItem("loggedInUsername"))
+            {
+                temp_len++;
+                table_data+= "<tr> <td>"+row.post_title+"</td> <td>"+row.post_description+"</td><td>"+row.post_type+"</td> <td> <a href=\"owner_update_property_workspace.html?email="+row.post_user_email+"&title="+row.post_title+"\">Update</a> /<a href=\"owner_delete_property_workspace.html?email="+row.post_user_email+"&title="+row.post_title+"\">Delete</a> </td></tr>";
+            }
+        });
+
+        if(temp_len<=0)
+        {
+            table_data = '<tr> <td style="font-size:30px"> No Properties/Workspaces Added for Current User </td> </tr>';    
+        }
+    }
+    else
+    {
+        table_data = '<tr> <td style="font-size:30px"> No Properties/Workspaces Added </td> </tr>';
+    }
+
+    document.getElementById("list_of_properties_workspaces").innerHTML = table_data;    
+}
+
+function addProperty()
+{
+    let title_field = document.getElementById("title");
+    let description_field = document.getElementById("description");
+    let type_field = document.getElementById("type");
+
+    let title = title_field.value;
+    let description = description_field.value;
+    let type = type_field.value;
+
+    if(title.length>0 && description.length>0 && type.length>0)
+    {
+        let existed_title = false;
+        list_of_properties_workspaces.forEach(row=>{
+            if(/*row.post_user_email === sessionStorage.getItem("loggedInUsername") && */ row.post_title === title)
+            {
+                existed_title = true;
+                return;
+            }
+        });
+
+        if(existed_title)
+        {
+            alert("Post existed with similar title");
+            title_field.value= "";
+            title_field.focus();
+        }
+        else
+        {
+            list_of_properties_workspaces.push({
+                post_user_email: sessionStorage.getItem("loggedInUsername"),
+                post_title: title,
+                post_description: description,
+                post_type : type,
+            });
+    
+            localStorage.setItem("list_of_properties_workspaces", JSON.stringify(list_of_properties_workspaces));
+    
+            alert("Successfully Added");
+            window.location = "owner.html";
+        }
+    }
+    else
+    {
+        alert("All Fields Required");
+        title_field.focus();
+    }
+
+}
+
+function updatePropertyOnLoad()
+{
+    let queryString = new URLSearchParams(window.location.search);
+    let user_email = queryString.get("email");
+    let post_title = queryString.get("title");
+    
+    let title,description,type;
+
+    list_of_properties_workspaces.forEach(value => {
+        if(value.post_user_email === user_email && value.post_title===post_title)
+        {
+            title = value.post_title;
+            description = value.post_description;
+            type = value.post_type;
+        }
+    });
+
+    let selected_index = 0;
+    document.getElementById("title").value = title;
+    document.getElementById("description").value = description;
+    (type == "property") ? selected_index = 1 : selected_index =2;
+    document.getElementById("type").selectedIndex = selected_index;
+}
+
+function updateProperty()
+{
+    let title_field = document.getElementById("title");
+    let description_field = document.getElementById("description");
+    let type_field = document.getElementById("type");
+
+    let title = title_field.value;
+    let description = description_field.value;
+    let type = type_field.value;
+
+    
+    let queryString = new URLSearchParams(window.location.search);
+    let user_email = queryString.get("email");
+    let post_title = queryString.get("title");
+
+    if(title.length>0 && description.length>0 && type.length>0)
+    {
+        let existed_title = false;
+        let sample_list = list_of_properties_workspaces.filter(function(value){
+            if(!(value.post_user_email === user_email && value.post_title=== post_title))
+            {
+                return value;
+            }
+        });
+
+        sample_list.forEach(row=>{
+            if(row.post_user_email === sessionStorage.getItem("loggedInUsername") && row.post_title === title)
+            {
+                existed_title = true;
+                return;
+            }
+        });
+
+        if(existed_title)
+        {
+            alert("Post existed with similar title");
+            title_field.focus();
+        }
+        else
+        {            
+            list_of_properties_workspaces.forEach(value => {
+                if(value.post_user_email === user_email && value.post_title === post_title)
+                {;
+                    value.post_title= title;
+                    value.post_description= description;
+                    value.post_type = type;
+                }
+            });
+        
+            localStorage.setItem("list_of_properties_workspaces", JSON.stringify(list_of_properties_workspaces));
+
+            alert("Successfully Updated");
+            window.location = "owner.html";
+        }
+    }
+    else
+    {
+        alert("All Fields Required");
+        title_field.focus();
+    }
+}
+
 
 function signOut()
 {
@@ -73,20 +252,33 @@ function createUser()
         if(password === confirm_password)
         {
             //check for existing user
-            // list_of_users.array.forEach(element => {
-            //     console.log(element.user_name);
-            // });
+            let existed_user = false;
+            list_of_users.forEach(row=>{
+                if(row.user_email === email)
+                {
+                    existed_user = true;
+                    return;
+                }
+            });
 
             // save user details to local storage.
-            current_user = {
-                user_name : name,
-                user_email : email,
-                user_phone : phone,
-                user_password : password,
-                user_ownership: ownership
-            };
-            list_of_users.push(current_user);
-            localStorage.setItem("list_of_users",JSON.stringify(list_of_users));
+            if(existed_user)
+            {
+                alert("Already Existed\nPlease Login!");
+            }
+            else
+            {
+                current_user = {
+                    user_name : name,
+                    user_email : email,
+                    user_phone : phone,
+                    user_password : encryptPassword(password),
+                    user_ownership: ownership
+                };
+                list_of_users.push(current_user);
+                localStorage.setItem("list_of_users",JSON.stringify(list_of_users));
+                alert("Successfully Signed Up!");
+            }
             window.location = "login.html";
         }
         else
@@ -107,7 +299,7 @@ function loginUser()
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
     list_of_users.forEach(user => {
-        if(user.user_email === email && user.user_password === password)
+        if(user.user_email === email && user.user_password === encryptPassword(password))
         {
             sessionStorage.setItem("isLoggedIn","true");
             sessionStorage.setItem("loggedInUsername",email);
@@ -135,34 +327,54 @@ function loginUser()
 
 }
 
+function propertiesTable()
+{
+    let table_data = "";
+
+    if(list_of_properties_workspaces.length>0)
+    {
+        table_data += "<tr> <th>Title</th> <th>Description</th> <th>Type</th> <th>View Post</th> </tr>";
+        list_of_properties_workspaces.forEach(row => {
+            table_data+= "<tr> <td>"+row.post_title+"</td> <td>"+row.post_description+"</td><td>"+row.post_type+"</td> <td> <a href=\"viewpost.html?title="+row.post_title+"\">View Post</a> </td></tr>";
+        });
+    }
+    else
+    {
+        table_data = '<tr> <td style="font-size:30px"> No Properties/Workspaces Added </td> </tr>';
+    }
+
+    document.getElementById("propertiesTable").innerHTML = table_data;  
+    
+}
+
+function viewPost()
+{
+    let queryString = new URLSearchParams(window.location.search);
+    let post_title = queryString.get("title");
+    
+    let list_of_properties_workspaces = JSON.parse(localStorage.getItem("list_of_properties_workspaces"));
+
+    list_of_properties_workspaces.forEach(function(value){
+            if(value.post_title===post_title)
+            {
+                document.getElementById("postTitle").innerHTML = "Title: "+ value.post_title;
+                document.getElementById("postDescription").innerHTML = "Description: " +value.post_description;
+                document.getElementById("postType").innerHTML = "Type: "+value.post_type;
+                document.getElementById("postEmail").innerHTML = "Contact: <a href=\"mailto:"+value.post_user_email+"\">"+value.post_user_email+"</a> for more info.";
+                return;
+            }
+    });
+
+}
+
 function encryptPassword(password)
 {
-    let salt = getRandomString(8);
-    let encryptedPassword = sha512(password, salt);
+    let salt = "$#125Hhwerfsd#67"
+    let encryptedPassword = sha512(salt+password+salt);
     return encryptedPassword;
 }
 
 
-
-//------------------------------------------------------------------------------------------------
-//Under this line is code for how to encrpyt string using sha512 algo
-
-function getRandomString(lengthOfString)
-{
-    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let charactersLength = characters.length;
-    let randomString = "";
-    for(let i=0; i<lengthOfString; i++)
-    {
-        randomString+= characters.charAt(Math.round(Math.random() * charactersLength));
-        //console.log(Math.round(Math.random() * charactersLength));
-    }
-    return randomString;
-}
-//console.log(encryptPassword("MyPassword") === encryptPassword("MyPassword"));
-
-
-//------------------------------------------------------------------------------------------------------------
 // function sha512 copied from https://coursesweb.net/javascript/sha512-encrypt-hash_cs
 /*
 * Secure Hash Algorithm (SHA512)

@@ -6,7 +6,7 @@
         <title> </title>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
-	<body onload="showProperties()">
+	<body>
         <ul>
             <li><a href="owner.html">Home</a></li>
             <span id="loginSignupMenu">
@@ -17,13 +17,20 @@
             <li style="float:right"><a href="#" id="signout" onclick="signOut()">Signout</a></li>
             <li style="float:right;pointer-events: none;"><a href="" id="username">Welcome Guest!</a></li>
         </ul>
-        <h1>List of Properties/Workspaces</h1>
-        <div>
-            <table style="text-align: center;width: 100%;" id="list_of_properties_workspaces">
-
-            </table>
+        <h1>Add Property/Workspace</h1>
+        <div style="text-align: center;">
+            <input type="text" id="title" placeholder="Enter Title" autofocus/>
+            </br></br>
+            <textarea placeholder="Enter Description here..." id="description" rows="5"></textarea>
+            </br></br>
+            <select id="type">
+                <option value="">Choose Property/Workspace</option>
+                <option value="property">Property</option>
+                <option value="workspace">Workspace</option>
+            </select>
+            </br>
+            <input type="submit" id="post_button" class="button_hover" value="Post" onclick="addProperty()"/>
         </div>
-        
         <script src="script.js"></script>
 	</body>
 </html>

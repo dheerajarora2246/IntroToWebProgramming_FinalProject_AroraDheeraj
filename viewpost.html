@@ -6,24 +6,24 @@
         <title> </title>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
-	<body onload="showProperties()">
+	<body onload="viewPost()">
         <ul>
-            <li><a href="owner.html">Home</a></li>
+            <li><a href="index.html">Home</a></li>
             <span id="loginSignupMenu">
                 <li><a href="login.html">Login</a></li>
                 <li><a href="signup.html">Signup</a></li>
             </span>
-            <li><a href="owner_add_property_workspace.html">Add Property/Workspace</a></li>
             <li style="float:right"><a href="#" id="signout" onclick="signOut()">Signout</a></li>
             <li style="float:right;pointer-events: none;"><a href="" id="username">Welcome Guest!</a></li>
         </ul>
-        <h1>List of Properties/Workspaces</h1>
-        <div>
-            <table style="text-align: center;width: 100%;" id="list_of_properties_workspaces">
-
-            </table>
+        <h1>Post Details</h1>
+        <div id="postDetail">
+            <div id="postTitle">Title</div>
+            <div id="postDescription">Description</div>
+            <div id="postType">Type</div>
+            <div id="postEmail" style="margin-top: 10px;">Email</div>
+            <div style="margin-top: 20px;"><a href="index.html">Go Back</a></div>
         </div>
-        
         <script src="script.js"></script>
 	</body>
 </html>

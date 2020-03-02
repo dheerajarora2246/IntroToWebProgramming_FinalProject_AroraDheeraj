@@ -6,15 +6,20 @@
         <title> </title>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
-	<body>
+	<body onload="propertiesTable()">
         <ul>
             <li><a href="index.html">Home</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="signup.html">Signup</a></li>
+            <span id="loginSignupMenu">
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html">Signup</a></li>
+            </span>
             <li style="float:right"><a href="#" id="signout" onclick="signOut()">Signout</a></li>
             <li style="float:right;pointer-events: none;"><a href="" id="username">Welcome Guest!</a></li>
         </ul>
         <h1>Welcome to our Home Page</h1>
+        <table style="width: 100%;text-align: center;" id="propertiesTable">
+            
+        </table>
         <script src="script.js"></script>
 	</body>
 </html>
