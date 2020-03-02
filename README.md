@@ -1,5 +1,9 @@
 # Final_Project
 
+Intro to Web Programming
+Project
+Dheeraj Arora
+
 Note: Open index.html with "Open with Live Server" option to see everything working rather than "Open in Default Browser" or directly open index.html in your browser from folder by double clicking index.html.
 
 Validations
